@@ -19,30 +19,41 @@ class DataPreparation:
         return df
 
 
-    def combine_description_strings(self):
+    def clean_description_strings(self, x: str):
         
-        #remove empty quotes
-        #join the list elements
-        literal_eval
-        
+        try:
+            cleaned_x = literal_eval(x)
+            cleaned_x.remove("About this space")
+            cleaned_x = "".join(cleaned_x)
+            return cleaned_x
 
-        #remove 'about this space' prefix
+        except Exception as e:
+            
+            return x
 
-
-        # for item in df["Description"]:
-        #     item.remove('About this space')
-
-
-        #df["Description"] = df["Description"].remove('About this space')
-        #df['Description'] = df['Description'].apply(lambda x: ' '.join(x) if type(x)==list else x)
-        
-        #print(df["Description"].head())
     
+    def combine_description_strings(self, df):
+        
+        '''This function takes in a dataframe and returns a dataframe with the "Description" column cleaned up
+        
+        Parameters
+        ----------
+        df
+            the dataframe
+        
+        Returns
+        -------
+            A dataframe with the description column cleaned.
+        '''
+        
+        df["Description"] = df["Description"].apply(self.clean_description_strings)
+        df['Description'].replace([r"\\n", "\n", r"\'"], [" "," ",""], regex=True, inplace=True)
+        #print(self.df['Description'][0])
+        
         return df
-
-    #combine_description_strings(df)
 
 
 
 dataprep = DataPreparation()  
-dataprep.remove_rows_with_missing_ratings()  
+dataprep.remove_rows_with_missing_ratings()
+dataprep.combine_description_strings(dataprep.df)
